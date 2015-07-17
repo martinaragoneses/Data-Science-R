@@ -1,3 +1,4 @@
+#### Lecture 1
 
 x <- c(1:6) # vector
 
@@ -48,6 +49,25 @@ names(x)
 y <- list(a = 1, b = 2, c=3)
 
 # Reading Data: 
+  # read.table, read.csv (tabular data)
+  # readLines (reading lines of a text file)
+  # source (reading R code files)
+
+# Main: read.table... arguments:
+  # file, header (indicating the file has a header line, var names), 
+  # sep (string indicating how the columns are separated), 
+  # colClasses (character vector), nrows, comment.char, 
+  # skip (number of lines to skip at the beginning)
+
+# e.g. data <- read.table("foo.txt")
+
+# If there is no comment lines in your data file, 
+# always set comment.char = ""
+# if all the columns are numeric: colClasses = "numeric"
+
+
+
+  
 
 
 
