@@ -1,0 +1,133 @@
+---
+title: "Week 2 - Coursera Data Science"
+author: "Martin Aragoneses"
+date: "July 22, 2015"
+output: pdf_document
+---
+
+## `if ... else` statements:
+
+```{r}
+if(1>2) {
+  print(1)
+} else if(2>1) {
+  print(2)
+} else {
+  print("bye")
+}
+```
+
+## `for` loops:
+
+```{r}
+
+x <- c("a", "b", "c", "d")
+
+for(i in seq_along(x)) {
+  print(x[i])
+}
+  ```
+
+```{r}
+x <- matrix(1:6, 2, 3)
+
+for(i in seq_len(nrow(x))) {
+  for (j in seq_len(ncol(x))) {
+    print(x[i, j])
+  }
+}
+
+```
+
+## `while` loops:
+
+```{r}
+count = 0
+while(count<10) {
+  print(count)
+  count <- count + 1
+}
+```
+```{r}
+# Random Walk
+z <- 5
+
+while(z >= 3 && z<= 10) {
+  print(z)
+  coin <- rbinom(1, 1, 0.5)  # flip a fair coin
+  
+  if(coin == 1) {    # random walk
+    z <- z + 1
+  } else {
+    z <- z - 1
+  }
+}
+```
+
+## `repear`, `next`, `break`:
+
+repeat until you find a break
+
+next skips an iteration in a loop
+
+## Your first R function:
+
+```{r}
+above <- function(x, n = 10) {
+  use <- x > n
+  x[use]
+}
+```
+```{r}
+columnMean <- function(x, removeNA = TRUE) {
+  ## x is a data frame or a matrix
+  ## we are going to go through each column
+  ## and calculate its mean
+  
+  nc <- ncol(x)
+  ## Initialize an empty (numeric) vector with as many elements as columns in the data frame/matrix
+  means <- numeric(nc)
+  for(i in 1:nc) {
+    # calculate the mean for each column i of all the individuals and fill it in the i-th index of the vect
+    means[i] <- mean(x[, i], na.rm = removeNA) 
+  }
+  means
+  
+}
+
+```
+
+
+## Lexical Scoping:
+
+```{r}
+make.power <- function(n) {
+  pow <- function(x) {
+    x^n
+  }
+  pow
+}
+
+cube <- make.power(3)
+square <- make.power(2)
+cube(3)
+square(4)
+```
+
+Lexical vs. Dynamic Scoping (which is what other languages use)
+
+```{r}
+y <- 10
+
+f <- function(x) {
+  y <- 2
+  y^2 + g(x)
+}
+
+g <- function(x) {
+  x*y
+}
+
+f(3)
+```
+
