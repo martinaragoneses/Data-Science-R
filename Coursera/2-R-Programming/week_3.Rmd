@@ -1,0 +1,39 @@
+---
+title: "Week 3"
+author: "Martin Aragoneses"
+date: "July 23, 2015"
+output: pdf_document
+---
+
+## `lapply()`
+
+```{r}
+x <- list(a = 1:5, b = rnorm(10))
+lapply(x, mean)  ## lapply(x, function, ...)
+y <- 1:4
+lapply(y, runif)
+```
+
+Anonymous functions
+
+```{r}
+x <- list(a = matrix(1:4, 2, 2), b = matrix(1:6, 3, 2))
+# we get the first column in each matrix
+lapply(x, function(e) e[, 1])
+```
+
+## `sapply()`
+
+```{r}
+x <- list(a = 1:16, b = rnorm(30), c = 3:5, d = rnorm(3, 4))
+sapply(x, mean)
+```
+
+## `apply()`
+
+```{r}
+x <- matrix(rnorm(20), 2, 10)
+apply(x, 1, quantile, probs = c(0.25, 0.75)) # collaps into and keep the rows
+```
+
+

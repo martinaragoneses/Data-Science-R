@@ -1,0 +1,56 @@
+---
+title: "Problem Set 3"
+author: "Martin Aragoneses"
+date: "July 23, 2015"
+output: pdf_document
+---
+## Data
+
+The data for this assignment come from the Hospital Compare web site (http://hospitalcompare.hhs.gov) run by the U.S. Department of Health and Human Services, providing information about the quality of care at over 4,000 Medicare-certified hospitals in the U.S. This dataset essentially covers all major U.S. hospitals. There are three files:
+
+* `outcome-of-care-measures.csv`: Contains information about 30-day mortality and readmission rates for heart attacks, heart failure, and pneumonia for over 4,000 hospitals.
+* `hospital-data.csv`: Contains information about each hospital.
+* `Hospital_Revised_Flatfiles.pdf`: Descriptions of the variables in each file (codebook).
+
+This assignment will focus on the variables for Number 19 (“Outcome of Care Measures.csv”) and Number 11 (“Hospital Data.csv”). In particular, the numbers of the variables for each table indicate column indices in each table (i.e. “Hospital Name” is column 2 in the outcome-of-care-measures.csv file).
+
+## Housekeeping
+
+First we change the working directory to be the same as where the data for this assignment is:
+
+```{r}
+setwd("~/Desktop/data/github/Data-Science-R/Coursera/2-R-Programming")
+```
+
+## Data Exploration
+
+Read the outcome data into R
+
+```{r}
+outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+#  read the data in as character :colClasses = "character" 
+head(outcome[, 1:11])
+ncol(outcome)  # number of variables
+nrow(outcome)  #number of observations
+names(outcome)[1:11] # vector with 11 first variable names
+```
+
+Histogram of the 30-day death rates from heart attack
+
+```{r}
+outcome[, 11] <- as.numeric(outcome[, 11]) # we need to coerce the "character" column to be numeric.
+hist(outcome[, 11], main ="30-day death rates from heart attack", xlab = "death rates")
+```
+
+## Exercise 1: Finding the best hospital in a state
+
+```{r}
+best <- function(state, outcome) {
+        ## Read outcome data
+
+        ## Check that state and outcome are valid
+  
+        ## Return hospital name in that state with lowest 30-day death rate
+}
+```
+
