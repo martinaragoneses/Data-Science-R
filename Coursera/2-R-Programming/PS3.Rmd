@@ -46,11 +46,189 @@ hist(outcome[, 11], main ="30-day death rates from heart attack", xlab = "death 
 
 ```{r}
 best <- function(state, outcome) {
-        ## Read outcome data
+      
+## Read outcome data
+outcomes <- read.csv("outcome-of-care-measures.csv", colClasses = "character", header = TRUE)     
+## Keep only the variables we need for the analysis
+outcomes <- outcomes[, c(2, 7, 11, 17, 23)]
+## Rename them for convenience
+colnames(outcomes) <- c("name", "State", "heart_attack", "heart_failure", "pneumonia")
+outcome <- sub('\\ ', '_', outcome)
+## Transform them to numeric
+outcomes[,3]  = suppressWarnings(as.numeric(outcomes[,3]))
+outcomes[,4]  = suppressWarnings(as.numeric(outcomes[,4]))
+outcomes[,5]  = suppressWarnings(as.numeric(outcomes[,5]))
 
-        ## Check that state and outcome are valid
+## Check that state and outcome are valid
+if(!is.element(outcome, names(outcomes))) {
+  print("invalid outcome")
+} else if(!is.element(state, outcomes$State)) {
+  print("invalid state")
   
-        ## Return hospital name in that state with lowest 30-day death rate
+  ## If they are, proceed with the analysis
+} else {
+      if(outcome == "heart_attack") {
+        ##c = 3
+        outcomes <- outcomes[order(outcomes$heart_attack, outcomes$name), ]
+      } else if(outcome == "heart_failure") {
+        ##c = 4
+        outcomes <- outcomes[order(outcomes$heart_failure, outcomes$name), ]
+      } else{ 
+        ##c= 5
+        outcomes <- outcomes[order(outcomes$pneumonia, outcomes$name), ]
+        
+      }
+
+out <- outcomes[outcomes$State == state,]
+out[1, 1]
 }
+## Another possibility would have been to use:
+##outcomes <- outcomes[outcomes$State == state, ]
+##out <- outcomes[, c]
+## Return hospital name in that state with lowest 30-day death rate
+##which(out == min(out, na.rm = TRUE)) ## Find which is the index of the minimum element 
+
+}
+ 
+```
+
+And now we test the function:
+```{r}
+best("TX", "heart attack")
+best("TX", "heart failure")
+best("MD", "heart attack")
+best("MD", "pneumonia")
+best("BB", "heart attack")
+best("NY", "hert attack")
+```
+
+## Exercise 2: Ranking hospitals by outcome in a state
+
+Write a function called rankhospital that takes three arguments: the 2-character abbreviated name of a state (state), an outcome (outcome), and the ranking of a hospital in that state for that outcome (num). The function reads the outcome-of-care-measures.csv file and returns a character vector with the name of the hospital that has the ranking specified by the num argument.
+
+
+```{r}
+
+rankhospital <- function(state, outcome, num = "best") {
+  
+##### The first part of this function is almost the same as for best() #####
+
+## FIRST PART ## (only modifying the option na.last in order() to take out NAs)
+
+## Read outcome data
+outcomes <- read.csv("outcome-of-care-measures.csv", colClasses = "character", header = TRUE)     
+## Keep only the variables we need for the analysis
+outcomes <- outcomes[, c(2, 7, 11, 17, 23)]
+## Rename them for convenience
+colnames(outcomes) <- c("name", "State", "heart_attack", "heart_failure", "pneumpnia")
+outcome <- sub('\\ ', '_', outcome)
+## Transform them to numeric
+outcomes[,3]  = suppressWarnings(as.numeric(outcomes[,3]))
+outcomes[,4]  = suppressWarnings(as.numeric(outcomes[,4]))
+outcomes[,5]  = suppressWarnings(as.numeric(outcomes[,5]))
+
+## Check that state and outcome are valid
+if(!is.element(outcome, names(outcomes))) {
+  stop("invalid outcome")
+} else if(!is.element(state, outcomes$State)) {
+  stop("invalid state")
+  
+  ## If they are, proceed with the analysis ( ++ taking out the NAs form the ranking)
+} else {
+      if(outcome == "heart_attack") {
+        ##c = 3
+        outcomes <- outcomes[order(outcomes$heart_attack, outcomes$name, na.last = NA), ]
+      } else if(outcome == "heart_failure") {
+        ##c = 4
+        outcomes <- outcomes[order(outcomes$heart_failure, outcomes$name, na.last = NA), ]
+      } else{ 
+        ##c= 5
+        outcomes <- outcomes[order(outcomes$pneumonia, outcomes$name, na.last = NA), ]
+        
+      }
+  }
+
+  out <- outcomes[outcomes$State == state, ]
+
+  ## SECOND PART ##
+
+  if(num == "best") {
+     num = 1
+  } else if(num == "worst") {
+      num = length(out$name)
+  }
+
+  if(length(outcomes$name) < num){
+    ans <- NA
+  } else {
+    ans <- out[num, 1]
+  }
+## Return hospital name in that state with the given rank 30-day death rate
+  ans
+}
+```
+And now we test the function:
+```{r}
+rankhospital("TX", "heart failure", 4)
+rankhospital("MD", "heart attack", "worst")
+rankhospital("MN", "heart attack", 5000)
+rankhospital("MD", "heart failure", 5)
+```
+
+## Exercise 3: Ranking hospitals in all states
+
+Write a function called rankall that takes two arguments: an outcome name (outcome) and a hospital rank- ing (num). The function reads the outcome-of-care-measures.csv file and returns a 2-column data frame containing the hospital in each state that has the ranking specified in num.
+
+```{r}
+rankall <- function(outcome, num = "best") {
+  
+## FIRST PART ## (same sa rankhospital, commenting out the line that subsets State == state)
+
+## Read outcome data
+outcomes <- read.csv("outcome-of-care-measures.csv", colClasses = "character", header = TRUE)     
+## Keep only the variables we need for the analysis
+outcomes <- outcomes[, c(2, 7, 11, 17, 23)]
+## Rename them for convenience
+colnames(outcomes) <- c("name", "State", "heart_attack", "heart_failure", "pneumpnia")
+outcome <- sub('\\ ', '_', outcome)
+## Transform them to numeric
+outcomes[,3]  = suppressWarnings(as.numeric(outcomes[,3]))
+outcomes[,4]  = suppressWarnings(as.numeric(outcomes[,4]))
+outcomes[,5]  = suppressWarnings(as.numeric(outcomes[,5]))
+
+## Check that state and outcome are valid
+if(!is.element(outcome, names(outcomes))) {
+  stop("invalid outcome")
+} else if(!is.element(state, outcomes$State)) {
+  stop("invalid state")
+  
+  ## If they are, proceed with the analysis ( ++ taking out the NAs form the ranking)
+} else {
+      if(outcome == "heart_attack") {
+        ##c = 3
+        outcomes <- outcomes[order(outcomes$heart_attack, outcomes$name, na.last = NA), ]
+      } else if(outcome == "heart_failure") {
+        ##c = 4
+        outcomes <- outcomes[order(outcomes$heart_failure, outcomes$name, na.last = NA), ]
+      } else{ 
+        ##c= 5
+        outcomes <- outcomes[order(outcomes$pneumonia, outcomes$name, na.last = NA), ]
+        
+      }
+  }
+ 
+  ## out <- outcomes[outcomes$State == state, ]  ## We need all states now
+
+  ## SECOND PART ##
+
+final <- data.frame(hospital = sapply(State, outcome, num, rankhospital), state == State)
+## Check that state and outcome are valid
+## For each state, find the hospital of the given rank
+## Return a data frame with the hospital names and the
+## (abbreviated) state name
+head(final)
+}
+
+rankall("heart attack", 20)
 ```
 
