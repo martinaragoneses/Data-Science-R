@@ -36,5 +36,76 @@ x <- matrix(rnorm(20), 2, 10)
 apply(x, 1, quantile, probs = c(0.25, 0.75)) # collaps into and keep the rows
 ```
 
+## `mapply()`
 
+it applies a function in parallel over a set of multiple objects (e.g. two lists, element wise 2 elements): Number of arguments <= number of lists you pass
+
+```{r}
+list( rep(1, 4), rep(2, 3), rep(3, 2), rep(4,1))
+# same as 
+mapply(rep, 1:4, 4:1)
+
+# You can also vectorize a function that does not allow for vetor args (like rnorm)
+
+rnorm(1:5, 1:5, 2) 
+mapply(rnorm, 1:5, 1:5, 2)
+
+
+```
+
+## `tapply()`
+Apply function over subsets of a vector
+
+```{r}
+x <- c(rnorm(10), runif(10), rnorm(10, 1))
+f <- gl(3, 10) # 3 levels: 1, 2, 3, each repeated 10 times
+tapply(x, f, mean)
+# range of observations gives you min and max
+tapply(x, f, range)
+```
+
+## `split()`
+like t-apply without applying the fucntion. split always returns a list back
+```{r}
+x <- c(rnorm(10), runif(10), rnorm(10, 1))
+f <- gl(3, 10) # 3 levels: 1, 2, 3, each repeated 10 times
+split(x, f) # returns a list with elements vectors with 10 numbers each
+
+library(datasets)
+head(airquality)
+# to calcuate the mean of certain vars within each month
+# split the data frame into monthly pieces
+s <- split(airquality, airquality$Month)
+lapply(s, function(x) colMeans(x[, c("Ozone", "Solar.R", "Wind")]))
+# Problem: if there are missing values, return NA
+
+# First we can simplify the results into a matrix, and then remove NAs
+sapply(s, function(x) colMeans(x[, c("Ozone", "Solar.R", "Wind")], na.rm = TRUE))
+
+
+x <- c(rnorm(10))
+f1 <- gl(2, 5)
+f2 <- gl(5, 2)
+
+interaction(f1, f2) # concatenates into 10 leves with a "."
+# if I pass list(f1, f2) to split it will already do the interaction for me
+split(x, list(f1, f2))
+str(split(x, list(f1, f2)))
+str(split(x, list(f1, f2), drop = TRUE)) # drops empty levels
+
+
+```
+
+## Debugging Tools:
+```{r}
+# invisible(x)
+# can't do NA >0 <= 0
+# need to do is.na(x)
+
+# traceback()
+# debug(func)
+
+
+
+```
 
