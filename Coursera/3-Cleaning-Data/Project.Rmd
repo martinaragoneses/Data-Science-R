@@ -1,0 +1,25 @@
+---
+title: "Data Cleaning Project"
+author: "Martin Aragoneses"
+date: "July 29, 2015"
+output: pdf_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+setwd("~/Desktop/data/github/Data-Science-R/Coursera/3-Cleaning-Data")
+if (!file.exists("data_project")) {# Checks if the directory "data" doesn't exist
+   dir.create("data_project")      # Create a directory "data"
+}
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

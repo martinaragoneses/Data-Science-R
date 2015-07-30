@@ -1,0 +1,116 @@
+---
+title: "Week 1"
+author: "Martin Aragoneses"
+date: "July 29, 2015"
+output: pdf_document
+---
+
+## download.file
+
+```{r}
+
+getwd()
+setwd("~/Desktop/data/github/Data-Science-R/Coursera/3-Cleaning-Data")
+if (!file.exists("data")) {# Checks if the directory "data" doesn't exist
+   dir.create("data")      # Create a directory "data"
+}
+
+str(download.file)
+
+# .CSV
+### Uncomment the following if you're doing it for the first time
+fileURL <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD"
+##download.file(fileURL, destfile = "./data/cameras.csv", method = "curl")
+list.files("./data")
+
+# Let's save the date in which the file was downloaded
+dateDownloaded <- date()
+dateDownloaded
+str(read.table)
+cameraData <- read.table("./data/cameras.csv", sep = ",", header = TRUE)
+# same as 
+cameraData <- read.csv("./data/cameras.csv") # default: sep = ",", header = TRUE)
+
+# .XLSX
+fileURL2 <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.xlsx?accessType=DOWNLOAD"
+##download.file(fileURL2, destfile = "./data/cameras.xlsx", method = "curl")
+list.files("./data")
+dateDownloaded2 <- date()
+
+## To read xlsx files we need...
+## Must do "install.packages("xlsx")" before"
+library(xlsx)
+cameraData2 <- read.xlsx("./data/cameras.xlsx", sheetIndex = 1, header = TRUE)
+
+## .JSON
+## Must run "install.packages("jsonlite")" before
+library(jsonlite)
+jsonData <- fromJSON("https://api.github.com/users/jtleek/repos")
+names(jsonData)
+names(jsonData$owner)
+names(jsonData$owner$login)
+
+# To export into JSON
+
+myjson <- toJSON(iris, pretty =TRUE)
+
+```
+
+## data.table()
+
+```{r}
+library("data.table") 
+## inherits from data.frame: can use same methods
+
+DT <- data.table(x = rnorm(9), y = rep(c("a", "b", "c"), each = 3), z = rnorm(9))
+## same sintax for subsetting
+
+### however: DT[c(2,3)] subsets second AND third ROWS, not an element
+DT[c(2,3)]
+## if x and z are two variables in the data set, 
+DT[, list(mean(x), sum(z))]
+
+## you can also add a new column w:
+DT[, w := z^2]  #makes a change to the original data table
+
+## multiple operations: the last thing that gets returned is what gets created (after ;):
+
+DT[, m := {temp <- (x+z); log2(temp+5)}]
+
+DT[, a := x>0]
+
+## if we want to summerize a variable by the cases where x>0 vs the cases where x<0
+DT[, b := mean(x + w), by = a]
+
+####   .N    represents number of times a particular group apears
+
+set.seed(1)
+DT <- data.table(x = sample(letters[1:3], 1E5, TRUE), y = rnorm(1E5))
+DT[, .N, by = x]
+
+setkey(DT, x) ## set x to be the key 
+
+# Now we can subset all the obs in which x == "a" by simply using
+DT["a"]
+
+# we can merge two data tables if they have the same key
+DT1 <- data.table(x = c("a", "a", "b", "dt1"), y = 1:4)
+DT2 <- data.table(x = c("a", "b", "dt2"), y = 5:7)
+
+setkey(DT1, x); setkey(DT2, x)
+merge(DT1, DT2)
+
+```
+
+## Web Scraping
+
+```{r}
+con <- url("http://allafrica.com/view/group/main/main/id/00037797.html")
+
+htmlCode <- readLines(con)
+close(con)
+htmlCode
+
+
+```
+
